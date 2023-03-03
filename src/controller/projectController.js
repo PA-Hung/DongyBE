@@ -113,20 +113,23 @@ const uploadImage = async (req, res) => {
 }
 
 const searchFunc = async (req, res) => {
-    let searchQuery = req.query.value
+    let searchName = req.query.name
+    let searchPhone = req.query.phone
+    console.log('>>>>>>>>>>>>>', searchName)
+    console.log('>>>>>>>>>>>>>', searchPhone)
     try {
         if (req.query.page && req.query.limit) {
             let page = req.query.page
             let limit = req.query.limit
 
-            let data = await projectApiService.searchWithPagination(searchQuery, +page, +limit);
+            let data = await projectApiService.searchWithPagination(searchName, searchPhone, +page, +limit);
             return res.status(200).json({
                 EM: data.EM, // Error Message
                 EC: data.EC, // Error Code
                 DT: data.DT, // Data
             })
         } else {
-            let data = await projectApiService.search(searchQuery);
+            let data = await projectApiService.search(searchName, searchPhone);
             return res.status(200).json({
                 EM: data.EM, // Error Message
                 EC: data.EC, // Error Code

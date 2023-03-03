@@ -137,14 +137,23 @@ const createPatient = async (data) => {
     }
 }
 
-const search = async (searchQuery) => {
+const search = async (searchName, searchPhone) => {
     try {
-        const searchColumns = ['name', 'dienthoai'];
+
+        let filters = {};
+        if (searchName && searchPhone) {
+            filters[Op.and] = [{ name: { [Op.like]: '%' + searchName + '%' } },
+            { dienthoai: { [Op.like]: '%' + searchPhone + '%' } }
+            ];
+        } else if (searchName === null) {
+            filters.name = { [Op.like]: '%' + searchName + '%' };
+        } else if (searchPhone === null) {
+            filters.dienthoai = { [Op.like]: '%' + searchPhone + '%' };
+        }
+
         let patient = await db.Project.findAll({
             nest: true,
-            where: {
-                [Op.or]: searchColumns.map(col => ({ [col]: { [Op.like]: '%' + searchQuery + '%' } }))
-            },
+            where: filters,
             order: [
                 [db.sequelize.literal('CASE WHEN `Project`.`updatedAt` > `Project`.`createdAt` THEN `Project`.`updatedAt` ELSE `Project`.`createdAt` END DESC')],
                 ['ngaykham', 'DESC'],
@@ -177,16 +186,24 @@ const search = async (searchQuery) => {
 }
 
 
-const searchWithPagination = async (searchQuery, page, limit) => {
+const searchWithPagination = async (searchName, searchPhone, page, limit) => {
     try {
         let offset = (page - 1) * limit;
-        const searchColumns = ['name', 'dienthoai'];
+        let filters = {};
+        if (searchName && searchPhone) {
+            filters[Op.and] = [{ name: { [Op.like]: '%' + searchName + '%' } },
+            { dienthoai: { [Op.like]: '%' + searchPhone + '%' } }
+            ];
+        } else if (searchName === null) {
+            filters.name = { [Op.like]: '%' + searchName + '%' };
+        } else if (searchPhone === null) {
+            filters.dienthoai = { [Op.like]: '%' + searchPhone + '%' };
+        }
+
         const { count, rows } = await db.Project.findAndCountAll({
             offset: offset,
             limit: limit,
-            where: {
-                [Op.or]: searchColumns.map(col => ({ [col]: { [Op.like]: '%' + searchQuery + '%' } }))
-            },
+            where: filters,
             nest: true,
             order: [
                 [db.sequelize.literal('CASE WHEN `Project`.`updatedAt` > `Project`.`createdAt` THEN `Project`.`updatedAt` ELSE `Project`.`createdAt` END DESC')],
