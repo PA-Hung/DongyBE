@@ -115,21 +115,38 @@ const uploadImage = async (req, res) => {
 const searchFunc = async (req, res) => {
     let searchName = req.query.name
     let searchPhone = req.query.phone
+    let searchNamsinh = req.query.namsinh
+    let searchDiachi = req.query.diachi
+    let searchLoaibenh = req.query.loaibenh
+    let searchNgaykham = req.query.ngaykham
+    let searchGhichu = req.query.ghichu
+    let searchChandoan = req.query.chandoan
+    let searchDieutri = req.query.dieutri
+    let searchKetqua = req.query.ketqua
     console.log('>>>>>>>>>>>>>', searchName)
     console.log('>>>>>>>>>>>>>', searchPhone)
+    console.log('>>>>>>>>>>>>>', searchNamsinh)
+    console.log('>>>>>>>>>>>>>', searchDiachi)
+    console.log('>>>>>>>>>>>>>', searchLoaibenh)
+    console.log('>>>>>>>>>>>>>', searchNgaykham)
+    console.log('>>>>>>>>>>>>>', searchGhichu)
+    console.log('>>>>>>>>>>>>>', searchChandoan)
+    console.log('>>>>>>>>>>>>>', searchDieutri)
+    console.log('>>>>>>>>>>>>>', searchKetqua)
+
     try {
         if (req.query.page && req.query.limit) {
             let page = req.query.page
             let limit = req.query.limit
 
-            let data = await projectApiService.searchWithPagination(searchName, searchPhone, +page, +limit);
+            let data = await projectApiService.searchWithPagination(searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua, + page, +limit);
             return res.status(200).json({
                 EM: data.EM, // Error Message
                 EC: data.EC, // Error Code
                 DT: data.DT, // Data
             })
         } else {
-            let data = await projectApiService.search(searchName, searchPhone);
+            let data = await projectApiService.search(searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua);
             return res.status(200).json({
                 EM: data.EM, // Error Message
                 EC: data.EC, // Error Code

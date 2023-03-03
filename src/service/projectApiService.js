@@ -137,19 +137,35 @@ const createPatient = async (data) => {
     }
 }
 
-const search = async (searchName, searchPhone) => {
+const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua) => {
     try {
 
         let filters = {};
-        if (searchName && searchPhone) {
-            filters[Op.and] = [{ name: { [Op.like]: '%' + searchName + '%' } },
-            { dienthoai: { [Op.like]: '%' + searchPhone + '%' } }
-            ];
-        } else if (searchName === null) {
+
+        if (searchName) {
             filters.name = { [Op.like]: '%' + searchName + '%' };
-        } else if (searchPhone === null) {
+        } else if (searchPhone) {
             filters.dienthoai = { [Op.like]: '%' + searchPhone + '%' };
+        } else if (searchNamsinh) {
+            filters.tuoi = { [Op.like]: '%' + searchNamsinh + '%' };
+        } else if (searchDiachi) {
+            filters.diachi = { [Op.like]: '%' + searchDiachi + '%' };
+        } else if (searchLoaibenh) {
+            filters.phanloaibenh = { [Op.like]: '%' + searchLoaibenh + '%' };
+        } else if (searchNgaykham) {
+            filters.ngaykham = { [Op.like]: '%' + searchNgaykham + '%' };
+        } else if (searchGhichu) {
+            filters.ghichu = { [Op.like]: '%' + searchGhichu + '%' };
+        } else if (searchChandoan) {
+            filters.chandoan = { [Op.like]: '%' + searchChandoan + '%' };
+        } else if (searchDieutri) {
+            filters.dieutri = { [Op.like]: '%' + searchDieutri + '%' };
+        } else if (searchKetqua) {
+            filters.ketqua = { [Op.like]: '%' + searchKetqua + '%' };
         }
+
+
+        console.log('>>filters>>>>', filters)
 
         let patient = await db.Project.findAll({
             nest: true,
@@ -186,19 +202,36 @@ const search = async (searchName, searchPhone) => {
 }
 
 
-const searchWithPagination = async (searchName, searchPhone, page, limit) => {
+const searchWithPagination = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua, page, limit) => {
     try {
         let offset = (page - 1) * limit;
         let filters = {};
-        if (searchName && searchPhone) {
-            filters[Op.and] = [{ name: { [Op.like]: '%' + searchName + '%' } },
-            { dienthoai: { [Op.like]: '%' + searchPhone + '%' } }
-            ];
-        } else if (searchName === null) {
+
+
+        if (searchName) {
             filters.name = { [Op.like]: '%' + searchName + '%' };
-        } else if (searchPhone === null) {
+        } else if (searchPhone) {
             filters.dienthoai = { [Op.like]: '%' + searchPhone + '%' };
+        } else if (searchNamsinh) {
+            filters.tuoi = { [Op.like]: '%' + searchNamsinh + '%' };
+        } else if (searchDiachi) {
+            filters.diachi = { [Op.like]: '%' + searchDiachi + '%' };
+        } else if (searchLoaibenh) {
+            filters.phanloaibenh = { [Op.like]: '%' + searchLoaibenh + '%' };
+        } else if (searchNgaykham) {
+            filters.ngaykham = { [Op.like]: '%' + searchNgaykham + '%' };
+        } else if (searchGhichu) {
+            filters.ghichu = { [Op.like]: '%' + searchGhichu + '%' };
+        } else if (searchChandoan) {
+            filters.chandoan = { [Op.like]: '%' + searchChandoan + '%' };
+        } else if (searchDieutri) {
+            filters.dieutri = { [Op.like]: '%' + searchDieutri + '%' };
+        } else if (searchKetqua) {
+            filters.ketqua = { [Op.like]: '%' + searchKetqua + '%' };
         }
+
+
+        console.log('>>filters>>>>', filters)
 
         const { count, rows } = await db.Project.findAndCountAll({
             offset: offset,
