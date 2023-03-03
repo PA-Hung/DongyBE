@@ -1,5 +1,5 @@
 import db from "../models";
-//import apiService from '../service/apiService'
+import apiService from '../service/apiService'
 import { Op } from "sequelize";
 
 const getAllPatient = async () => {
@@ -140,36 +140,23 @@ const createPatient = async (data) => {
 const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua) => {
     try {
 
-        let filters = {};
-
-        if (searchName) {
-            filters.name = { [Op.like]: '%' + searchName + '%' };
-        } else if (searchPhone) {
-            filters.dienthoai = { [Op.like]: '%' + searchPhone + '%' };
-        } else if (searchNamsinh) {
-            filters.tuoi = { [Op.like]: '%' + searchNamsinh + '%' };
-        } else if (searchDiachi) {
-            filters.diachi = { [Op.like]: '%' + searchDiachi + '%' };
-        } else if (searchLoaibenh) {
-            filters.phanloaibenh = { [Op.like]: '%' + searchLoaibenh + '%' };
-        } else if (searchNgaykham) {
-            filters.ngaykham = { [Op.like]: '%' + searchNgaykham + '%' };
-        } else if (searchGhichu) {
-            filters.ghichu = { [Op.like]: '%' + searchGhichu + '%' };
-        } else if (searchChandoan) {
-            filters.chandoan = { [Op.like]: '%' + searchChandoan + '%' };
-        } else if (searchDieutri) {
-            filters.dieutri = { [Op.like]: '%' + searchDieutri + '%' };
-        } else if (searchKetqua) {
-            filters.ketqua = { [Op.like]: '%' + searchKetqua + '%' };
-        }
-
-
-        console.log('>>filters>>>>', filters)
-
         let patient = await db.Project.findAll({
             nest: true,
-            where: filters,
+            where: {
+                [Op.and]: [
+                    { phanloaibenh: { [Op.like]: '%' + searchLoaibenh + '%' } },
+                    { name: { [Op.like]: '%' + searchName + '%' } },
+                    { tuoi: { [Op.like]: '%' + searchNamsinh + '%' } },
+                    { ngaykham: { [Op.like]: '%' + searchNgaykham + '%' } },
+                    { dienthoai: { [Op.like]: '%' + searchPhone + '%' } },
+                    { diachi: { [Op.like]: '%' + searchDiachi + '%' } },
+                    { ghichu: { [Op.like]: '%' + searchGhichu + '%' } },
+                    { chandoan: { [Op.like]: '%' + searchChandoan + '%' } },
+                    { dieutri: { [Op.like]: '%' + searchDieutri + '%' } },
+                    { ketqua: { [Op.like]: '%' + searchKetqua + '%' } },
+                ],
+            },
+
             order: [
                 [db.sequelize.literal('CASE WHEN `Project`.`updatedAt` > `Project`.`createdAt` THEN `Project`.`updatedAt` ELSE `Project`.`createdAt` END DESC')],
                 ['ngaykham', 'DESC'],
@@ -205,38 +192,25 @@ const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, sear
 const searchWithPagination = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua, page, limit) => {
     try {
         let offset = (page - 1) * limit;
-        let filters = {};
-
-
-        if (searchName) {
-            filters.name = { [Op.like]: '%' + searchName + '%' };
-        } else if (searchPhone) {
-            filters.dienthoai = { [Op.like]: '%' + searchPhone + '%' };
-        } else if (searchNamsinh) {
-            filters.tuoi = { [Op.like]: '%' + searchNamsinh + '%' };
-        } else if (searchDiachi) {
-            filters.diachi = { [Op.like]: '%' + searchDiachi + '%' };
-        } else if (searchLoaibenh) {
-            filters.phanloaibenh = { [Op.like]: '%' + searchLoaibenh + '%' };
-        } else if (searchNgaykham) {
-            filters.ngaykham = { [Op.like]: '%' + searchNgaykham + '%' };
-        } else if (searchGhichu) {
-            filters.ghichu = { [Op.like]: '%' + searchGhichu + '%' };
-        } else if (searchChandoan) {
-            filters.chandoan = { [Op.like]: '%' + searchChandoan + '%' };
-        } else if (searchDieutri) {
-            filters.dieutri = { [Op.like]: '%' + searchDieutri + '%' };
-        } else if (searchKetqua) {
-            filters.ketqua = { [Op.like]: '%' + searchKetqua + '%' };
-        }
-
-
-        console.log('>>filters>>>>', filters)
-
+        // console.log('>>>>>>>>> api service searchChandoan ', searchChandoan)
+        // console.log('>>>>>>>>> api service searchChandoan ', searchKetqua)
         const { count, rows } = await db.Project.findAndCountAll({
             offset: offset,
             limit: limit,
-            where: filters,
+            where: {
+                [Op.and]: [
+                    { phanloaibenh: { [Op.like]: '%' + searchLoaibenh + '%' } },
+                    { name: { [Op.like]: '%' + searchName + '%' } },
+                    { tuoi: { [Op.like]: '%' + searchNamsinh + '%' } },
+                    { ngaykham: { [Op.like]: '%' + searchNgaykham + '%' } },
+                    { dienthoai: { [Op.like]: '%' + searchPhone + '%' } },
+                    { diachi: { [Op.like]: '%' + searchDiachi + '%' } },
+                    { ghichu: { [Op.like]: '%' + searchGhichu + '%' } },
+                    { chandoan: { [Op.like]: '%' + searchChandoan + '%' } },
+                    { dieutri: { [Op.like]: '%' + searchDieutri + '%' } },
+                    { ketqua: { [Op.like]: '%' + searchKetqua + '%' } },
+                ],
+            },
             nest: true,
             order: [
                 [db.sequelize.literal('CASE WHEN `Project`.`updatedAt` > `Project`.`createdAt` THEN `Project`.`updatedAt` ELSE `Project`.`createdAt` END DESC')],

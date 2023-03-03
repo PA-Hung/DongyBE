@@ -123,16 +123,16 @@ const searchFunc = async (req, res) => {
     let searchChandoan = req.query.chandoan
     let searchDieutri = req.query.dieutri
     let searchKetqua = req.query.ketqua
-    console.log('>>>>>>>>>>>>>', searchName)
-    console.log('>>>>>>>>>>>>>', searchPhone)
-    console.log('>>>>>>>>>>>>>', searchNamsinh)
-    console.log('>>>>>>>>>>>>>', searchDiachi)
-    console.log('>>>>>>>>>>>>>', searchLoaibenh)
-    console.log('>>>>>>>>>>>>>', searchNgaykham)
-    console.log('>>>>>>>>>>>>>', searchGhichu)
-    console.log('>>>>>>>>>>>>>', searchChandoan)
-    console.log('>>>>>>>>>>>>>', searchDieutri)
-    console.log('>>>>>>>>>>>>>', searchKetqua)
+    // console.log('>>>>>>searchName>>>>>>>', searchName)
+    // console.log('>>>>>>searchPhone>>>>>>>', searchPhone)
+    // console.log('>>>>>>searchNamsinh>>>>>>>', searchNamsinh)
+    // console.log('>>>>>>searchDiachi>>>>>>>', searchDiachi)
+    // console.log('>>>>>>searchLoaibenh>>>>>>>', searchLoaibenh)
+    // console.log('>>>>>>searchNgaykham>>>>>>>', searchNgaykham)
+    // console.log('>>>>>>searchGhichu>>>>>>>', searchGhichu)
+    //console.log('>>>>>> Controller searchChandoan>>>>>>>', searchChandoan)
+    // console.log('>>>>>>searchDieutri>>>>>>>', searchDieutri)
+    //console.log('>>>>>> Controller searchKetqua>>>>>>>', searchKetqua)
 
     try {
         if (req.query.page && req.query.limit) {
