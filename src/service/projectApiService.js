@@ -143,18 +143,16 @@ const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, sear
         let patient = await db.Project.findAll({
             nest: true,
             where: {
-                [Op.and]: [
-                    { phanloaibenh: { [Op.like]: '%' + searchLoaibenh + '%' } },
-                    { name: { [Op.like]: '%' + searchName + '%' } },
-                    { tuoi: { [Op.like]: '%' + searchNamsinh + '%' } },
-                    { ngaykham: { [Op.like]: '%' + searchNgaykham + '%' } },
-                    { dienthoai: { [Op.like]: '%' + searchPhone + '%' } },
-                    { diachi: { [Op.like]: '%' + searchDiachi + '%' } },
-                    { ghichu: { [Op.like]: '%' + searchGhichu + '%' } },
-                    { chandoan: { [Op.like]: '%' + searchChandoan + '%' } },
-                    { dieutri: { [Op.like]: '%' + searchDieutri + '%' } },
-                    { ketqua: { [Op.like]: '%' + searchKetqua + '%' } },
-                ],
+                phanloaibenh: { [Op.like]: '%' + searchLoaibenh + '%' },
+                name: { [Op.like]: '%' + searchName + '%' },
+                tuoi: { [Op.like]: '%' + searchNamsinh + '%' },
+                ngaykham: { [Op.like]: '%' + searchNgaykham + '%' },
+                dienthoai: { [Op.like]: '%' + searchPhone + '%' },
+                diachi: { [Op.like]: '%' + searchDiachi + '%' },
+                ghichu: { [Op.like]: '%' + searchGhichu + '%' },
+                chandoan: { [Op.like]: '%' + searchChandoan + '%' },
+                dieutri: { [Op.like]: '%' + searchDieutri + '%' },
+                ketqua: { [Op.like]: '%' + searchKetqua + '%' },
             },
 
             order: [
@@ -192,24 +190,21 @@ const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, sear
 const searchWithPagination = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua, page, limit) => {
     try {
         let offset = (page - 1) * limit;
-        // console.log('>>>>>>>>> api service searchChandoan ', searchChandoan)
-        // console.log('>>>>>>>>> api service searchChandoan ', searchKetqua)
+        //console.log('>>>>>>>>> api service', searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua, page, limit)
         const { count, rows } = await db.Project.findAndCountAll({
             offset: offset,
             limit: limit,
             where: {
-                [Op.and]: [
-                    { phanloaibenh: { [Op.like]: '%' + searchLoaibenh + '%' } },
-                    { name: { [Op.like]: '%' + searchName + '%' } },
-                    { tuoi: { [Op.like]: '%' + searchNamsinh + '%' } },
-                    { ngaykham: { [Op.like]: '%' + searchNgaykham + '%' } },
-                    { dienthoai: { [Op.like]: '%' + searchPhone + '%' } },
-                    { diachi: { [Op.like]: '%' + searchDiachi + '%' } },
-                    { ghichu: { [Op.like]: '%' + searchGhichu + '%' } },
-                    { chandoan: { [Op.like]: '%' + searchChandoan + '%' } },
-                    { dieutri: { [Op.like]: '%' + searchDieutri + '%' } },
-                    { ketqua: { [Op.like]: '%' + searchKetqua + '%' } },
-                ],
+                phanloaibenh: { [Op.like]: '%' + searchLoaibenh + '%' },
+                name: { [Op.like]: '%' + searchName + '%' },
+                tuoi: { [Op.like]: '%' + searchNamsinh + '%' },
+                ngaykham: { [Op.like]: '%' + searchNgaykham + '%' },
+                dienthoai: { [Op.like]: '%' + searchPhone + '%' },
+                diachi: { [Op.like]: '%' + searchDiachi + '%' },
+                ghichu: { [Op.like]: '%' + searchGhichu + '%' },
+                chandoan: { [Op.like]: '%' + searchChandoan + '%' },
+                dieutri: { [Op.like]: '%' + searchDieutri + '%' },
+                ketqua: { [Op.like]: '%' + searchKetqua + '%' },
             },
             nest: true,
             order: [
@@ -218,6 +213,9 @@ const searchWithPagination = async (searchName, searchPhone, searchNamsinh, sear
             ],
             include: [{ model: db.Project_Imgs }],
         },)
+
+        // console.log('>>>>>>>> số bản ghi tìm được ', count)
+        // console.log('>>>>>>>> data tìm dc ', rows)
 
         let totalPages = Math.ceil(count / limit)
         let data = {
