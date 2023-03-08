@@ -119,24 +119,20 @@ const searchFunc = async (req, res) => {
     let searchDiachi = req.query.diachi
     let searchLoaibenh = req.query.loaibenh
     let searchNgaykham = req.query.ngaykham
-    let searchGhichu = req.query.ghichu
-    let searchChandoan = req.query.chandoan
-    let searchDieutri = req.query.dieutri
-    let searchKetqua = req.query.ketqua
 
     try {
         if (req.query.page && req.query.limit) {
             let page = req.query.page
             let limit = req.query.limit
 
-            let data = await projectApiService.searchWithPagination(searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua, + page, +limit);
+            let data = await projectApiService.searchWithPagination(searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, +page, +limit);
             return res.status(200).json({
                 EM: data.EM, // Error Message
                 EC: data.EC, // Error Code
                 DT: data.DT, // Data
             })
         } else {
-            let data = await projectApiService.search(searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua);
+            let data = await projectApiService.search(searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham);
             return res.status(200).json({
                 EM: data.EM, // Error Message
                 EC: data.EC, // Error Code

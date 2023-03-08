@@ -1,6 +1,8 @@
 import db from "../models";
 import apiService from '../service/apiService'
 import { Op } from "sequelize";
+import mysql from 'mysql2/promise';
+import bluebird from 'bluebird';
 
 const getAllPatient = async () => {
     try {
@@ -10,7 +12,7 @@ const getAllPatient = async () => {
                 ['ngaykham', 'DESC'],
             ],
             nest: true,
-            include: [{ model: db.Project_Imgs }]
+            //include: [{ model: db.Project_Imgs }]
         })
         if (patients) {
             return {
@@ -38,6 +40,31 @@ const getAllPatient = async () => {
 const getAllPatientWithPagination = async (page, limit) => {
     try {
         let offset = (page - 1) * limit;
+        // console.log('offset', offset)
+        // console.log('limit', limit)
+
+        // const connection = await mysql.createConnection(
+        //     {
+        //         host: process.env.HOST,
+        //         user: process.env.USER,
+        //         password: process.env.PASSWORD,
+        //         database: process.env.DATABASE,
+        //         Promise: bluebird
+        //     })
+
+        // const [SQLcount] = await connection.execute('SELECT COUNT(*) AS count FROM Projects');
+        // const [SQLrows] = await connection.execute(`SELECT * FROM dongy.Projects
+        // LEFT JOIN Project_Imgs ON Projects.id = Project_Imgs.projectId
+        // ORDER BY GREATEST(
+        //             COALESCE(Projects.createdAt, '0000-00-00'), 
+        //             COALESCE(Projects.updatedAt, '0000-00-00'), 
+        //             COALESCE(Projects.ngaykham, '0000-00-00')) 
+        //             DESC LIMIT ${limit} OFFSET ${offset}`);
+        // console.log('>>>>>>>>>>>>>> SQLcount:', SQLcount);
+        // console.log('>>>>>>>>>>>>>> SQLrows:', SQLrows);
+        // let count = SQLcount[0].count
+        // let rows = SQLrows
+
         const { count, rows } = await db.Project.findAndCountAll({
             offset: offset,
             limit: limit,
@@ -46,11 +73,23 @@ const getAllPatientWithPagination = async (page, limit) => {
                 ['ngaykham', 'DESC']
             ],
             nest: true,
-            include: [{
-                model: db.Project_Imgs,
-                order: [[db.Project_Imgs, 'createdAt', 'DESC']]
-            }],
+            // include: [{
+            //     model: db.Project_Imgs,
+            //     innerJoin: true,
+            //     on: {
+            //         projectId: db.Sequelize.col('Project.id')
+            //     }
+            // }]
+            // include: [{
+            //     model: db.Project_Imgs,
+            //     order: [[db.Project_Imgs, 'createdAt', 'DESC']]
+            // }],
         },)
+
+        //console.log('>>>>>>>sqlcount >>>>>>>>', sqlcount)
+        //console.log('>>>>>>>count >>>>>>>>', count)
+        //console.log('>>>>>>>>sqlrows >>>>>>>', sqlrows)
+        //console.log('>>>>>>>>rows >>>>>>>', rows)
 
         let totalPages = Math.ceil(count / limit)
         let data = {
@@ -115,6 +154,7 @@ const createPatient = async (data) => {
                 DT: 'phone',
             }
         }
+
         console.log('>>>>>>>>>> check data thêm mới bệnh nhân : ', data.hinhanh)
         const project = await db.Project.create(data)
         console.log('>>>>>>>>>> check data thêm mới bệnh nhân : ', project.id)
@@ -137,7 +177,7 @@ const createPatient = async (data) => {
     }
 }
 
-const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua) => {
+const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham) => {
     try {
 
         let patient = await db.Project.findAll({
@@ -148,11 +188,7 @@ const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, sear
                 tuoi: { [Op.like]: '%' + searchNamsinh + '%' },
                 ngaykham: { [Op.like]: '%' + searchNgaykham + '%' },
                 dienthoai: { [Op.like]: '%' + searchPhone + '%' },
-                diachi: { [Op.like]: '%' + searchDiachi + '%' },
-                ghichu: { [Op.like]: '%' + searchGhichu + '%' },
-                chandoan: { [Op.like]: '%' + searchChandoan + '%' },
-                dieutri: { [Op.like]: '%' + searchDieutri + '%' },
-                ketqua: { [Op.like]: '%' + searchKetqua + '%' },
+                diachi: { [Op.like]: '%' + searchDiachi + '%' }
             },
 
             order: [
@@ -187,26 +223,21 @@ const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, sear
 }
 
 
-const searchWithPagination = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua, page, limit) => {
+const searchWithPagination = async (searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, page, limit) => {
     try {
         let offset = (page - 1) * limit;
-        //console.log('>>>>>>>>> api service', searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, searchGhichu, searchChandoan, searchDieutri, searchKetqua, page, limit)
+        console.log('>>>>>>>>> giá trị tìm kiếm từ FE', searchName, searchPhone, searchNamsinh, searchDiachi, searchLoaibenh, searchNgaykham, page, limit)
         const { count, rows } = await db.Project.findAndCountAll({
             offset: offset,
             limit: limit,
             where: {
-                phanloaibenh: { [Op.like]: '%' + searchLoaibenh + '%' },
-                name: { [Op.like]: '%' + searchName + '%' },
+                name: { [Op.like]: `%${searchName}%` },
+                phanloaibenh: { [Op.like]: `%${searchLoaibenh}%` },
                 tuoi: { [Op.like]: '%' + searchNamsinh + '%' },
                 ngaykham: { [Op.like]: '%' + searchNgaykham + '%' },
                 dienthoai: { [Op.like]: '%' + searchPhone + '%' },
                 diachi: { [Op.like]: '%' + searchDiachi + '%' },
-                ghichu: { [Op.like]: '%' + searchGhichu + '%' },
-                chandoan: { [Op.like]: '%' + searchChandoan + '%' },
-                dieutri: { [Op.like]: '%' + searchDieutri + '%' },
-                ketqua: { [Op.like]: '%' + searchKetqua + '%' },
             },
-            nest: true,
             order: [
                 [db.sequelize.literal('CASE WHEN `Project`.`updatedAt` > `Project`.`createdAt` THEN `Project`.`updatedAt` ELSE `Project`.`createdAt` END DESC')],
                 ['ngaykham', 'DESC'],
@@ -214,7 +245,7 @@ const searchWithPagination = async (searchName, searchPhone, searchNamsinh, sear
             include: [{ model: db.Project_Imgs }],
         },)
 
-        // console.log('>>>>>>>> số bản ghi tìm được ', count)
+        console.log('>>>>>>>> số bản ghi tìm được ', count)
         // console.log('>>>>>>>> data tìm dc ', rows)
 
         let totalPages = Math.ceil(count / limit)
