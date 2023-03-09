@@ -12,7 +12,10 @@ const getAllPatient = async () => {
                 ['ngaykham', 'DESC'],
             ],
             nest: true,
-            //include: [{ model: db.Project_Imgs }]
+            include: [{
+                model: db.Project_Imgs,
+                order: [[db.Project_Imgs, 'createdAt', 'DESC']]
+            }],
         })
         if (patients) {
             return {
@@ -40,30 +43,6 @@ const getAllPatient = async () => {
 const getAllPatientWithPagination = async (page, limit) => {
     try {
         let offset = (page - 1) * limit;
-        // console.log('offset', offset)
-        // console.log('limit', limit)
-
-        // const connection = await mysql.createConnection(
-        //     {
-        //         host: process.env.HOST,
-        //         user: process.env.USER,
-        //         password: process.env.PASSWORD,
-        //         database: process.env.DATABASE,
-        //         Promise: bluebird
-        //     })
-
-        // const [SQLcount] = await connection.execute('SELECT COUNT(*) AS count FROM Projects');
-        // const [SQLrows] = await connection.execute(`SELECT * FROM dongy.Projects
-        // LEFT JOIN Project_Imgs ON Projects.id = Project_Imgs.projectId
-        // ORDER BY GREATEST(
-        //             COALESCE(Projects.createdAt, '0000-00-00'), 
-        //             COALESCE(Projects.updatedAt, '0000-00-00'), 
-        //             COALESCE(Projects.ngaykham, '0000-00-00')) 
-        //             DESC LIMIT ${limit} OFFSET ${offset}`);
-        // console.log('>>>>>>>>>>>>>> SQLcount:', SQLcount);
-        // console.log('>>>>>>>>>>>>>> SQLrows:', SQLrows);
-        // let count = SQLcount[0].count
-        // let rows = SQLrows
 
         const { count, rows } = await db.Project.findAndCountAll({
             offset: offset,
@@ -73,23 +52,11 @@ const getAllPatientWithPagination = async (page, limit) => {
                 ['ngaykham', 'DESC']
             ],
             nest: true,
-            // include: [{
-            //     model: db.Project_Imgs,
-            //     innerJoin: true,
-            //     on: {
-            //         projectId: db.Sequelize.col('Project.id')
-            //     }
-            // }]
-            // include: [{
-            //     model: db.Project_Imgs,
-            //     order: [[db.Project_Imgs, 'createdAt', 'DESC']]
-            // }],
+            include: [{
+                model: db.Project_Imgs,
+                order: [[db.Project_Imgs, 'createdAt', 'DESC']]
+            }],
         },)
-
-        //console.log('>>>>>>>sqlcount >>>>>>>>', sqlcount)
-        //console.log('>>>>>>>count >>>>>>>>', count)
-        //console.log('>>>>>>>>sqlrows >>>>>>>', sqlrows)
-        //console.log('>>>>>>>>rows >>>>>>>', rows)
 
         let totalPages = Math.ceil(count / limit)
         let data = {
@@ -195,7 +162,10 @@ const search = async (searchName, searchPhone, searchNamsinh, searchDiachi, sear
                 [db.sequelize.literal('CASE WHEN `Project`.`updatedAt` > `Project`.`createdAt` THEN `Project`.`updatedAt` ELSE `Project`.`createdAt` END DESC')],
                 ['ngaykham', 'DESC'],
             ],
-            include: [{ model: db.Project_Imgs }]
+            include: [{
+                model: db.Project_Imgs,
+                order: [[db.Project_Imgs, 'createdAt', 'DESC']]
+            }],
         })
 
         if (patient && patient.length > 0) {
@@ -242,7 +212,10 @@ const searchWithPagination = async (searchName, searchPhone, searchNamsinh, sear
                 [db.sequelize.literal('CASE WHEN `Project`.`updatedAt` > `Project`.`createdAt` THEN `Project`.`updatedAt` ELSE `Project`.`createdAt` END DESC')],
                 ['ngaykham', 'DESC'],
             ],
-            include: [{ model: db.Project_Imgs }],
+            include: [{
+                model: db.Project_Imgs,
+                order: [[db.Project_Imgs, 'createdAt', 'DESC']]
+            }],
         },)
 
         console.log('>>>>>>>> số bản ghi tìm được ', count)
